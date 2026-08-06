@@ -1,0 +1,11 @@
+# Front-controller: mọi request (trừ file/thư mục có thật, vd /uploads/...)
+# đều được chuyển vào index.php để router tự parse REQUEST_URI
+RewriteEngine On
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^ index.php [QSA,L]
+
+# Không cho truy cập trực tiếp file .env
+<FilesMatch "^\.env">
+    Require all denied
+</FilesMatch>
