@@ -1,6 +1,6 @@
--- Tạo cơ sở dữ liệu hrms nếu chưa có
-CREATE DATABASE IF NOT EXISTS `hrms` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-USE `hrms`;
+-- Lưu ý: file này không tự tạo/USE database — hãy chọn đúng database đích
+-- trong phpMyAdmin (sidebar trái) trước khi Import, vì hosting dùng chung
+-- (như InfinityFree) không cho phép user tự CREATE DATABASE.
 
 -- --------------------------------------------------------
 -- Xóa bảng cũ nếu tồn tại

@@ -1,7 +1,9 @@
 <?php
 /**
- * Đọc file .env (KEY=VALUE, không hỗ trợ nested/export) và nạp vào biến môi trường.
- * Không ghi đè biến môi trường đã có sẵn (ví dụ do server set trước).
+ * Đọc file .env (KEY=VALUE, không hỗ trợ nested/export) và nạp vào $GLOBALS['__env'].
+ * Cố tình không dùng putenv()/getenv() để nạp — nhiều shared hosting (InfinityFree...)
+ * disable 2 hàm này vì lý do bảo mật (tránh 1 site ảnh hưởng biến môi trường site khác
+ * dùng chung server), khiến việc nạp .env âm thầm thất bại mà không báo lỗi gì.
  */
 
 function load_env(string $path): void {
@@ -18,13 +20,14 @@ function load_env(string $path): void {
             $value = substr($value, 1, -1);
         }
 
-        if (getenv($key) === false) {
-            putenv("$key=$value");
+        if (!isset($GLOBALS['__env'][$key])) {
+            $GLOBALS['__env'][$key] = $value;
         }
     }
 }
 
 function env(string $key, $default = null) {
+    if (isset($GLOBALS['__env'][$key])) return $GLOBALS['__env'][$key];
     $value = getenv($key);
     return $value === false ? $default : $value;
 }
