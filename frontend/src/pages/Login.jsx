@@ -56,17 +56,6 @@ const Login = () => {
             {loading ? <><i className="bi bi-hourglass-split me-2" />Đang đăng nhập...</> : <><i className="bi bi-box-arrow-in-right me-2" />Đăng nhập</>}
           </button>
         </form>
-        <div style={{ marginTop: 24, borderTop: '1px solid rgba(255,255,255,.08)', paddingTop: 20 }}>
-          <p style={{ color: '#475569', fontSize: 12, marginBottom: 8, textAlign: 'center' }}>Tài khoản demo</p>
-          <div style={{ display: 'flex', gap: 8, justifyContent: 'center', flexWrap: 'wrap' }}>
-            {[['admin','admin123'], ['manager','manager123'], ['employee','emp123']].map(([u,p]) => (
-              <button key={u} onClick={() => setForm({ username: u, password: p })}
-                style={{ background: 'rgba(255,255,255,.06)', border: '1px solid rgba(255,255,255,.1)', borderRadius: 6, padding: '4px 10px', color: '#94a3b8', fontSize: 11.5, cursor: 'pointer' }}>
-                {u}
-              </button>
-            ))}
-          </div>
-        </div>
       </div>
     </div>
   );

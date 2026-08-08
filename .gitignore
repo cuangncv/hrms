@@ -1,2 +1,5 @@
 backend_php/.env
 node_modules/
+frontend/dist/
+frontend-dist/
+frontend-dist.zip

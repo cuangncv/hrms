@@ -1,11 +1,33 @@
-# Front-controller: mọi request (trừ file/thư mục có thật, vd /uploads/...)
-# đều được chuyển vào index.php để router tự parse REQUEST_URI
-RewriteEngine On
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule ^ index.php [QSA,L]
+DirectoryIndex index.html index.php
 
-# Không cho truy cập trực tiếp file .env
-<FilesMatch "^\.env">
+# Nhiều shared hosting không tự chuyển header Authorization xuống PHP —
+# dòng này ép Apache chuyển tiếp để require_auth() đọc được Bearer token.
+RewriteEngine On
+RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+
+# Gắn CORS header ở tầng Apache (dự phòng, không bắt buộc khi cùng domain nhưng vô hại)
+<IfModule mod_headers.c>
+    Header always set Access-Control-Allow-Origin "*"
+    Header always set Access-Control-Allow-Methods "GET, POST, PUT, PATCH, DELETE, OPTIONS"
+    Header always set Access-Control-Allow-Headers "Content-Type, Authorization, X-Requested-With"
+</IfModule>
+
+# Trả lời ngay request OPTIONS (preflight) với 200
+RewriteCond %{REQUEST_METHOD} OPTIONS
+RewriteRule ^ - [R=200,L]
+
+# File/thư mục có thật (ảnh trong uploads/, assets/, index.html...) thì để Apache tự phục vụ
+RewriteCond %{REQUEST_FILENAME} -f [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^ - [L]
+
+# Request /api/* → route về index.php (backend PHP router)
+RewriteRule ^api(/.*)?$ index.php [QSA,L]
+
+# Mọi request còn lại (route của React Router: /dashboard, /employees...) → trả về index.html
+RewriteRule ^ index.html [L]
+
+# Chặn truy cập trực tiếp các file cấu hình/nhạy cảm
+<FilesMatch "^(\.env|config\.php|database\.sql)$">
     Require all denied
 </FilesMatch>
